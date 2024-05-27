@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -11,9 +12,14 @@ public class RandomEnvironment : MonoBehaviour
     private int smallHouseLength = 0;
     private int bigHouseLenght = 0;
     private bool bigCity = false;
-    private List<GameObject> RoadChunks = new List<GameObject>();
+    // private List<GameObject> RoadChunks = new List<GameObject>();
+    private Queue<GameObject> RoadChunks = new Queue<GameObject>();
     private GameManager gameManager;
     private bool spawnOnce;
+
+    // Creating a delegate to contain the handling the chunks
+    private delegate void HandleChunks();
+    private HandleChunks handleChunks;
 
     // Inspector variables
     [Header ("Prefabs")]
@@ -53,6 +59,10 @@ public class RandomEnvironment : MonoBehaviour
         bigHouseLenght = bigHouses.Count;
 
         gameManager = GameManager.instance;
+
+        // Adding the methods to the delegate
+        handleChunks += InstantiateChunks;
+        handleChunks += RemoveChunks;
     }
     void Update()
     {
@@ -69,8 +79,7 @@ public class RandomEnvironment : MonoBehaviour
         // Only spawns new chunks if the player has not won the game
         if(transform.position.z < gameManager.winDistance)
         {
-            InstantiateChunks();
-            RemoveChunks();
+            handleChunks();
         }
         // If the player has won the game it will spawn the hospital
         else
@@ -83,10 +92,9 @@ public class RandomEnvironment : MonoBehaviour
             return;
 
         // If the chunk that is the first in the list, which is the one furthest back, is far enough behind the player it will be destroyed and removed from the list
-        if(RoadChunks[0].transform.position.z < transform.position.z - removeDistance)
+        if(RoadChunks.Peek().transform.position.z < transform.position.z - removeDistance)
         {
-            GameObject toRemove = RoadChunks[0];
-            RoadChunks.RemoveAt(0);
+            GameObject toRemove = RoadChunks.Dequeue();
             Destroy(toRemove);
         }
     }
@@ -110,7 +118,7 @@ public class RandomEnvironment : MonoBehaviour
             // Setting the lastZ to the new chunks position
             GameObject newChunk = Instantiate(prefabtoInstantiate, position, Quaternion.identity);
             newChunk.transform.parent = environment.transform;
-            RoadChunks.Add(newChunk);
+            RoadChunks.Enqueue(newChunk);
             lastZ = newChunk.transform.position.z;
         }
     }
@@ -124,8 +132,7 @@ public class RandomEnvironment : MonoBehaviour
         GameObject newChunk = Instantiate(HospitalInstantiate, position, Quaternion.identity);
 
         newChunk.transform.parent = environment.transform;
-        RoadChunks.Add(newChunk);
+        RoadChunks.Enqueue(newChunk);
         lastZ = newChunk.transform.position.z;
     }
-
 }
