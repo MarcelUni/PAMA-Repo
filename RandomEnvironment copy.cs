@@ -12,7 +12,6 @@ public class RandomEnvironment : MonoBehaviour
     private int smallHouseLength = 0;
     private int bigHouseLenght = 0;
     private bool bigCity = false;
-    // private List<GameObject> RoadChunks = new List<GameObject>();
     private Queue<GameObject> RoadChunks = new Queue<GameObject>();
     private GameManager gameManager;
     private bool spawnOnce;
@@ -55,6 +54,7 @@ public class RandomEnvironment : MonoBehaviour
         addToZ = 23.83068f; // This is the distance between the center of each chunk
         // I couldn't find a way to calculate this distance so I had to measure it manually
 
+        // floatsa used to select a random prefab from the lists
         smallHouseLength = smallHouses.Count;
         bigHouseLenght = bigHouses.Count;
 
@@ -136,3 +136,5 @@ public class RandomEnvironment : MonoBehaviour
         lastZ = newChunk.transform.position.z;
     }
 }
+
+
