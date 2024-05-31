@@ -4,6 +4,8 @@ using System.Net.NetworkInformation;
 using Unity.VisualScripting;
 using UnityEngine;
 
+// Github copilot helped me with parts of the code below.
+
 public class RandomEnvironment : MonoBehaviour
 {
     // Private variables
