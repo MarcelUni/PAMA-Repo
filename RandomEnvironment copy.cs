@@ -8,7 +8,6 @@ using UnityEngine;
 
 public class RandomEnvironment : MonoBehaviour
 {
-    // Private variables
     private float addToZHospital = 15f;
     private float lastZ = 0;
     private int smallHouseLength = 0;
@@ -67,7 +66,7 @@ public class RandomEnvironment : MonoBehaviour
         handleChunks += RemoveChunks;
     }
     void Update()
-    {
+    {   
         // Checks if the player is far enough to spawn big houses
         if(transform.position.z > bigHouseThreshold)
         {
@@ -86,19 +85,6 @@ public class RandomEnvironment : MonoBehaviour
         // If the player has won the game it will spawn the hospital
         else
             SpawnHospital();
-    }
-    private void RemoveChunks()
-    {
-        // Return if there are no chunks to remove to avoid errors
-        if(RoadChunks.Count == 0)
-            return;
-
-        // If the chunk that is the first in the list, which is the one furthest back, is far enough behind the player it will be destroyed and removed from the list
-        if(RoadChunks.Peek().transform.position.z < transform.position.z - removeDistance)
-        {
-            GameObject toRemove = RoadChunks.Dequeue();
-            Destroy(toRemove);
-        }
     }
     private void InstantiateChunks()
     {
@@ -124,6 +110,19 @@ public class RandomEnvironment : MonoBehaviour
             lastZ = newChunk.transform.position.z;
         }
     }
+    private void RemoveChunks()
+    {
+        // Return if there are no chunks to remove to avoid errors
+        if(RoadChunks.Count == 0)
+            return;
+
+        // If the chunk that is the first in the list, which is the one furthest back, is far enough behind the player it will be destroyed and removed from the list
+        if(RoadChunks.Peek().transform.position.z < transform.position.z - removeDistance)
+        {
+            GameObject toRemove = RoadChunks.Dequeue();
+            Destroy(toRemove);
+        }
+    }
     public void SpawnHospital()
     {
         // Calculate the position of the hospital
@@ -138,5 +137,3 @@ public class RandomEnvironment : MonoBehaviour
         lastZ = newChunk.transform.position.z;
     }
 }
-
-
